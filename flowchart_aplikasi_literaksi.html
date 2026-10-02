@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diagram Alir LiterAksi</title>
+    
+    <!-- Tailwind CSS untuk Styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Google: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Mermaid.js untuk Flowchart -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js"></script>
+    
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .mermaid { display: flex; justify-content: center; }
+        /* Custom scrollbar untuk kemudahan scroll di flowchart yang panjang */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    </style>
+    
+    <script>
+        // Inisialisasi Mermaid dengan tema yang disesuaikan
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'base',
+            themeVariables: {
+                fontFamily: 'Inter',
+                primaryColor: '#e0f2fe',
+                primaryBorderColor: '#3b82f6',
+                primaryTextColor: '#1e293b',
+                lineColor: '#64748b',
+                secondaryColor: '#f0fdf4',
+                tertiaryColor: '#fffbeb'
+            },
+            flowchart: { curve: 'basis' } // Membuat garis lengkung agar terlihat lebih modern
+        });
+    </script>
+</head>
+
+<body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col items-center p-4 md:p-8">
+
+    <div class="max-w-6xl w-full bg-white rounded-2xl shadow-xl overflow-hidden border border-slate-100">
+        
+        <!-- Header -->
+        <header class="bg-gradient-to-r from-blue-600 to-indigo-600 p-6 md:p-10 text-center text-white">
+            <h1 class="text-3xl md:text-4xl font-bold tracking-tight mb-2">Diagram Alir LiterAksi</h1>
+            <p class="text-blue-100 text-sm md:text-base max-w-2xl mx-auto">
+                Pemetaan perjalanan pengguna (User Journey) dari awal membuka aplikasi hingga menyelesaikan aktivitas membaca dan mendapatkan hadiah.
+            </p>
+        </header>
+
+        <div class="p-6 md:p-10 flex flex-col lg:flex-row gap-8">
+            
+            <!-- Flowchart Area -->
+            <div class="lg:w-2/3 border border-slate-200 rounded-xl bg-slate-50 overflow-x-auto p-4 flex flex-col shadow-inner">
+                <div class="flex justify-between items-center mb-4 pb-2 border-b border-slate-200">
+                    <h2 class="text-lg font-semibold text-slate-700 flex items-center">
+                        <svg class="w-5 h-5 mr-2 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"></path></svg>
+                        Diagram Alir (Mermaid)
+                    </h2>
+                </div>
+                
+                <div class="mermaid w-full">
+flowchart TD
+    %% Mulai
+    Start(["1. Buka Aplikasi LiterAksi"]) --> Auth{"2. Memiliki Akun?"}
+    
+    %% Alur Registrasi
+    Auth -- Belum --> Reg["Daftar (Register)"]
+    Reg --> PilihMinat["3. Pilih Minat Baca"]
+    
+    PilihMinat -.-> MinatOpts["Olahraga, Teknologi,<br>Seni & Budaya, Edukasi<br>& Pembangunan, Isu Publik"]
+    
+    PilihMinat --> HTP["4. Cara Bermain (How To Play)"]
+    HTP --> Home(("5. Beranda"))
+    
+    %% Alur Login
+    Auth -- Sudah --> Log["Masuk (Login)"]
+    Log --> Home
+    
+    %% Beranda / Dashboard (Sub-menu)
+    Home --> PB["6. Bilah Kemajuan (Progress Bar)"]
+    Home --> Act["7. Aksi (Action)"]
+    Home --> Png["8. Pengaturan"]
+    Home -.-> TP[("Total Poin")]
+    
+    %% Detail Progress Bar
+    PB --> Grafik["Grafik Perkembangan Harian"]
+    
+    %% Detail Action (Core Loop)
+    Act --> Act1["Pilih Minat Baca"]
+    Act1 --> Act2["Membaca Artikel<br>Kepingan teks bacaan"]
+    Act2 --> Act3{"Kuis Suara<br>(Batas Waktu)"}
+    
+    %% Anotasi Mekanisme Background (Hidden)
+    Act3 -.->|"Proses Latar Belakang"| HiddenBg["Sistem mendeteksi kata kunci<br>relevan dari suara pengguna<br>(Tersembunyi dari Pengguna)"]
+    
+    Act3 -->|"Waktu Habis / Selesai"| CekKata{"Apakah ada kata<br>yang disebutkan?"}
+    
+    CekKata -->|Ya| Hitung["Kalkulasi Poin"]
+    Hitung -.->|"Lebih banyak kata relevan = Poin lebih besar"| Act4["Tampilkan Poin & Hadiah<br>di Akhir"]
+    
+    CekKata -->|"Tidak Ada (Diam)"| ZP["0 Poin"]
+    
+    ZP --> Home
+    Act4 --> Home
+    
+    %% Detail Pengaturan
+    Png --> S1["Ganti Surel (Email)"]
+    Png --> S2["Ganti Kata Sandi"]
+    Png --> S3["Keluar (Logout)"]
+    
+    S3 --> Start
+
+    %% Styling Elements
+    classDef start fill:#10b981,stroke:#047857,stroke-width:2px,color:#fff,font-weight:bold;
+    classDef decision fill:#f59e0b,stroke:#b45309,stroke-width:2px,color:#fff,font-weight:bold;
+    classDef core fill:#3b82f6,stroke:#1d4ed8,stroke-width:2px,color:#fff,font-weight:bold;
+    classDef dashboard fill:#8b5cf6,stroke:#6d28d9,stroke-width:3px,color:#fff,font-weight:bold;
+    classDef sub fill:#f1f5f9,stroke:#94a3b8,stroke-width:1px,color:#334155;
+    classDef points fill:#f43f5e,stroke:#be123c,stroke-width:2px,color:#fff,font-weight:bold;
+    classDef hiddenBg fill:#f8fafc,stroke:#94a3b8,stroke-width:2px,stroke-dasharray: 5 5,color:#475569,font-style:italic;
+
+    class Start start;
+    class Auth,Act3,CekKata decision;
+    class Reg,Log,PilihMinat,HTP core;
+    class Home dashboard;
+    class PB,Act,Png core;
+    class MinatOpts,Grafik,Act1,Act2,Act4,Hitung,ZP,S1,S2,S3 sub;
+    class TP points;
+    class HiddenBg hiddenBg;
+                </div>
+            </div>
+
+            <!-- Penjelasan Teknis -->
+            <div class="lg:w-1/3 flex flex-col gap-4">
+                
+                <!-- Info Mekanisme Kuis (Baru) -->
+                <div class="bg-indigo-50 border border-indigo-200 rounded-xl p-5 shadow-sm">
+                    <h3 class="text-indigo-800 font-bold mb-3 flex items-center">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg>
+                        Mekanisme Kuis Suara
+                    </h3>
+                    <p class="text-sm text-slate-700 mb-2">
+                        LiterAksi menggunakan pendekatan <strong>menceritakan ulang (retelling)</strong> melalui suara.
+                    </p>
+                    <ul class="text-sm text-slate-700 space-y-2 list-disc list-inside">
+                        <li>Pengguna menjelaskan ulang bacaan menggunakan suara.</li>
+                        <li>Sistem mendeteksi kata kunci secara otomatis di <em>latar belakang</em>.</li>
+                        <li><strong>Tersembunyi:</strong> Pengguna tidak mengetahui daftar kata kunci yang harus ditebak.</li>
+                        <li><strong>Hadiah (Reward):</strong> Semakin banyak kata relevan, semakin tinggi poin yang ditampilkan di akhir.</li>
+                    </ul>
+                </div>
+
+                <div class="bg-blue-50 border border-blue-100 rounded-xl p-5 shadow-sm">
+                    <h3 class="text-blue-800 font-bold mb-3 flex items-center">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        Keterangan Simbol
+                    </h3>
+                    <ul class="text-sm text-slate-700 space-y-3">
+                        <li class="flex items-start">
+                            <span class="w-4 h-4 mt-0.5 rounded bg-emerald-500 mr-3 flex-shrink-0"></span>
+                            <span><strong>Mulai:</strong> Titik masuk aplikasi.</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="w-4 h-4 mt-0.5 rounded bg-amber-500 mr-3 flex-shrink-0"></span>
+                            <span><strong>Keputusan:</strong> Kondisi bercabang (Cek akun, Waktu habis).</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="w-4 h-4 mt-0.5 rounded bg-blue-500 mr-3 flex-shrink-0"></span>
+                            <span><strong>Proses Utama:</strong> Pendaftaran, Masuk, Navigasi utama.</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="w-4 h-4 mt-0.5 rounded bg-purple-500 mr-3 flex-shrink-0"></span>
+                            <span><strong>Dasbor:</strong> Halaman "Beranda" utama.</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="w-4 h-4 mt-0.5 rounded border-2 border-dashed border-slate-400 mr-3 flex-shrink-0 bg-slate-50"></span>
+                            <span><strong>Proses Tersembunyi:</strong> Proses sistem di latar belakang.</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Step Summary -->
+                <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-sm flex-grow">
+                    <h3 class="text-slate-800 font-bold mb-4">Ringkasan Langkah</h3>
+                    <ol class="list-decimal list-inside text-sm text-slate-600 space-y-2">
+                        <li>Buka Aplikasi</li>
+                        <li>Masuk / Daftar Akun</li>
+                        <li>Pilih kategori minat (Olahraga, dll.)</li>
+                        <li>Pelajari cara bermain di <em>Cara Bermain</em></li>
+                        <li>Masuk ke <strong>Beranda</strong></li>
+                        <li>Pantau grafik di <strong>Bilah Kemajuan</strong></li>
+                        <li>Jalankan <strong>Aksi</strong> (Baca Artikel)</li>
+                        <li>Ikuti <strong>Kuis Suara</strong> dengan menceritakan ulang isi artikel sebelum batas waktu berakhir.</li>
+                        <li>Dapatkan poin di akhir sesuai jumlah kata relevan.</li>
+                    </ol>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    
+    <footer class="mt-8 text-center text-slate-400 text-sm">
+        Dibuat untuk LiterAksi • Sistem Diagram Alir Terpadu
+    </footer>
+
+</body>
+</html>
